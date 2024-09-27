@@ -21,6 +21,13 @@ type apiConfig struct {
 func main() {
 	fmt.Println("Hello world!")
 
+  /*DEBUG!*/
+  // feed, err := urlToFeed("https://rss.draghetti.it/ilpost.xml")
+  // if err != nil {
+  //   log.Fatal(err)
+  // }
+  // fmt.Println(feed)
+
 	godotenv.Load(".env")
 
 	portString := os.Getenv("PORT")
@@ -67,6 +74,10 @@ func main() {
 
   v1Router.Post("/feeds", apiCfg.middlewareAuth(apiCfg.handlerCreateFeed))
   v1Router.Get("/feeds", apiCfg.handlerGetAllFeeds)
+
+  v1Router.Post("/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerCreateFeedFollow))
+  v1Router.Get("/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerGetFeedFollow))
+  v1Router.Delete("/feed_follows/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.handlerDeleteFeedFollow))
   
   router.Mount("/v1", v1Router)
 
