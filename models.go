@@ -39,11 +39,15 @@ type Post struct {
   PublishedAt time.Time `json:"published_at"`
   Title string `json:"title"`
   Url string `json:"url"`
-  Description string `json:"description"`
+  Description *string `json:"description"`
   FeedID uuid.UUID `json:"feed_id"`
 }
 
 func remapDatabasePost(dbPost database.Post) Post {
+  var description *string
+  if dbPost.Description.Valid {
+    description = &dbPost.Description.String
+  }
   return Post{
     ID: dbPost.ID,
     CreatedAt: dbPost.CreatedAt,
@@ -51,9 +55,20 @@ func remapDatabasePost(dbPost database.Post) Post {
     PublishedAt: dbPost.PublishedAt,
     Title: dbPost.Title,
     Url: dbPost.Url,
-    Description: dbPost.Description.String,
+    Description: description,
     FeedID: dbPost.FeedID,
   }
+}
+
+func remapAllPosts(dbPosts []database.Post) []Post {
+  remappedPosts := make([]Post, 0)
+
+  for _, dbPost := range dbPosts {
+    remappedPost := remapDatabasePost(dbPost)
+    remappedPosts = append(remappedPosts, remappedPost)
+  }
+
+  return remappedPosts
 }
 
 func remapDatabaseFeedFollow(dbFeedFollow database.FeedFollow) FeedFollow {
