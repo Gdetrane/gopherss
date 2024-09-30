@@ -32,6 +32,30 @@ type FeedFollow struct {
   FeedID uuid.UUID `json:"feed_id"`
 }
 
+type Post struct {
+  ID uuid.UUID `json:"id"`
+  CreatedAt time.Time `json:"created_at"`
+  UpdatedAt time.Time `json:"updated_at"`
+  PublishedAt time.Time `json:"published_at"`
+  Title string `json:"title"`
+  Url string `json:"url"`
+  Description string `json:"description"`
+  FeedID uuid.UUID `json:"feed_id"`
+}
+
+func remapDatabasePost(dbPost database.Post) Post {
+  return Post{
+    ID: dbPost.ID,
+    CreatedAt: dbPost.CreatedAt,
+    UpdatedAt: dbPost.UpdatedAt,
+    PublishedAt: dbPost.PublishedAt,
+    Title: dbPost.Title,
+    Url: dbPost.Url,
+    Description: dbPost.Description.String,
+    FeedID: dbPost.FeedID,
+  }
+}
+
 func remapDatabaseFeedFollow(dbFeedFollow database.FeedFollow) FeedFollow {
   return FeedFollow{
     ID: dbFeedFollow.UserID,

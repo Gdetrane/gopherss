@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Gdetrane/gopherss/internal/database"
 	"github.com/go-chi/chi"
@@ -51,6 +52,8 @@ func main() {
     DB: queries,
   }
 
+  go startScraping(queries, 20, time.Minute)
+
 	router := chi.NewRouter()
 
 	router.Use(
@@ -87,6 +90,7 @@ func main() {
 	}
 
 	log.Printf("Server starting on port %s", portString)
+
 	err = srv.ListenAndServe()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Server error: %v", err)
